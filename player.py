@@ -32,6 +32,15 @@ def agregar_varias_canciones():
         playlist_box.insert(END, cancion)
 
 
+def borrar_cancion():
+    playlist_box.delete(ANCHOR)
+
+
+def borrar_todas_canciones():
+    playlist_box.delete(0, END)
+
+
+
 #- Crear playlist box
 playlist_box = Listbox(root, bg='black', fg='green', width=60, selectbackground='green', selectforeground='black')
 playlist_box.pack(pady=20)
@@ -64,13 +73,20 @@ boton_stop.grid(row=0, column=4, padx=10)
 mi_menu = Menu(root)
 root.config(menu=mi_menu)
 
-#- Crear menu para agregar canciones
+#- Crear menu para agregar canciones a la playlist
 agregar_cancion_menu = Menu(mi_menu, tearoff=0)
 mi_menu.add_cascade(label='Agregar cancion', menu=agregar_cancion_menu)
 #- Agregar una cancion a la playlist
 agregar_cancion_menu.add_command(label='Agregar una cancion', command=agregar_cancion)
 #- Agregar varias canciones a la playlist
 agregar_cancion_menu.add_command(label='Agregar varias canciones', command=agregar_varias_canciones)
+
+#- Crear menu para borrar canciones de la playlist
+borrar_cancion_menu = Menu(mi_menu, tearoff=0)
+mi_menu.add_cascade(label='Borrar cancion', menu=borrar_cancion_menu)
+borrar_cancion_menu.add_command(label='Borrar una cancion', command=borrar_cancion)
+borrar_cancion_menu.add_command(label='Borrar todas las canciones', command=borrar_todas_canciones)
+
 
 #- Label temporal
 mi_label = Label(root, text='')
