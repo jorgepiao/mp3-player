@@ -6,6 +6,14 @@ root = Tk()
 root.title('MP3 Player')
 root.geometry('500x400')
 
+
+def agregar_cancion():
+    pass
+
+def agregar_varias_canciones():
+    pass
+
+
 #- Crear playlist box
 playlist_box = Listbox(root, bg='black', fg='green', width=60)
 playlist_box.pack(pady=20)
@@ -34,8 +42,17 @@ boton_play.grid(row=0, column=2, padx=10)
 boton_pause.grid(row=0, column=3, padx=10)
 boton_stop.grid(row=0, column=4, padx=10)
 
+#- Crear menu
+mi_menu = Menu(root)
+root.config(menu=mi_menu)
 
-
+#- Crear menu para agregar canciones
+agregar_cancion_menu = Menu(mi_menu, tearoff=0)
+mi_menu.add_cascade(label='Agregar cancion', menu=agregar_cancion_menu)
+#- Agregar una cancion a la playlist
+agregar_cancion_menu.add_command(label='Agregar una cancion', command=agregar_cancion)
+#- Agregar varias canciones a la playlist
+agregar_cancion_menu.add_command(label='Agregar varias canciones', command=agregar_varias_canciones)
 
 root.mainloop()
 
