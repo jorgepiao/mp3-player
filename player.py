@@ -1,5 +1,6 @@
 
 from tkinter import *
+from tkinter import filedialog
 
 root = Tk()
 
@@ -8,14 +9,21 @@ root.geometry('500x400')
 
 
 def agregar_cancion():
-    pass
+    cancion = filedialog.askopenfilename(initialdir='audio/', title='Elige una cancion', filetypes=(('Archivos mp3', '*.mp3'), ))
+    # mi_label.config(text=cancion)
+
+    #- Nombre de la cancion sin la ruta
+    cancion = cancion.replace('C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/', '')
+    cancion = cancion.replace('.mp3', '')
+
+    playlist_box.insert(END, cancion)
 
 def agregar_varias_canciones():
     pass
 
 
 #- Crear playlist box
-playlist_box = Listbox(root, bg='black', fg='green', width=60)
+playlist_box = Listbox(root, bg='black', fg='green', width=60, selectbackground='green', selectforeground='black')
 playlist_box.pack(pady=20)
 
 #- Imagenes de los botones del control
@@ -53,6 +61,13 @@ mi_menu.add_cascade(label='Agregar cancion', menu=agregar_cancion_menu)
 agregar_cancion_menu.add_command(label='Agregar una cancion', command=agregar_cancion)
 #- Agregar varias canciones a la playlist
 agregar_cancion_menu.add_command(label='Agregar varias canciones', command=agregar_varias_canciones)
+
+#- Label temporal
+mi_label = Label(root, text='')
+mi_label.pack(pady=20)
+
+
+
 
 root.mainloop()
 
