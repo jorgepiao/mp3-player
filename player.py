@@ -16,10 +16,20 @@ def agregar_cancion():
     cancion = cancion.replace('C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/', '')
     cancion = cancion.replace('.mp3', '')
 
+    #- Agregar cancion al final de la playlist
     playlist_box.insert(END, cancion)
 
+
 def agregar_varias_canciones():
-    pass
+    canciones = filedialog.askopenfilename(initialdir='audio/', title='Elige una cancion', filetypes=(('Archivos mp3', '*.mp3'), ))
+
+    for cancion in canciones:
+        #- Nombre de la cancion sin la ruta
+        cancion = cancion.replace('C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/', '')
+        cancion = cancion.replace('.mp3', '')
+
+        #- Agregar cancion al final de la playlist
+        playlist_box.insert(END, cancion)
 
 
 #- Crear playlist box
