@@ -2,6 +2,8 @@
 from tkinter import *
 from tkinter import filedialog
 import pygame
+import time
+from mutagen.mp3 import MP3
 
 root = Tk()
 
@@ -11,9 +13,35 @@ root.geometry('500x400')
 #- inicializar Pygame
 pygame.mixer.init()
 
+
+#- Funcion para el tiempo de reproduccion
+def tiempo_reproduccion():
+    #- obtener el tiempo actual de la cancion
+    tiempo_actual = pygame.mixer.music.get_pos() / 1000
+    #- formato de tiempo (minutos y segundos)
+    formato_tiempo = time.strftime('%M:%S', time.gmtime(tiempo_actual))
+
+    #- obtener la ruta de la cancion
+    cancion = playlist_box.get(ACTIVE)
+    cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
+
+    #- duracion de la cancion
+    mut_cancion = MP3(cancion)
+    global duracion_cancion
+    duracion_cancion = mut_cancion.info.length
+    #- formato de tiempo
+    formato_duracion_cancion = time.strftime('%M:%S', time.gmtime(duracion_cancion))
+
+    #- mostrar el tiempo en la barra de estado
+    if tiempo_actual >= 0:
+        barra_estado.config(text=f'Tiempo transcurrido: {formato_tiempo} de {formato_duracion_cancion}  ')
+    #- loop para el tiempo por segundo
+    barra_estado.after(1000, tiempo_reproduccion)
+
+
 def agregar_cancion():
     cancion = filedialog.askopenfilename(initialdir='audio/', title='Elige una cancion', filetypes=(('Archivos mp3', '*.mp3'), ))
-    # mi_label.config(text=cancion)
+    # etiqueta.config(text=cancion)
 
     #- Nombre de la cancion sin la ruta
     cancion = cancion.replace('C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/', '')
@@ -47,17 +75,22 @@ def play():
     #- obtener la ruta de la cancion
     cancion = playlist_box.get(ACTIVE)
     cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
-    # mi_label.config(text=cancion)
+    # etiqueta.config(text=cancion)
 
     #- cargar la cancion con pygame mixer
     pygame.mixer.music.load(cancion)
     #- tocar la cancion con pygame mixer
     pygame.mixer.music.play(loops=0)
 
+    #- tiempo de reproduccion de la cancion
+    tiempo_reproduccion()
+
 
 def stop():
     pygame.mixer.music.stop()
     playlist_box.selection_clear(ACTIVE)
+
+    barra_estado.config(text='')
 
 
 def siguiente_cancion():
@@ -161,11 +194,14 @@ mi_menu.add_cascade(label='Borrar cancion', menu=borrar_cancion_menu)
 borrar_cancion_menu.add_command(label='Borrar una cancion', command=borrar_cancion)
 borrar_cancion_menu.add_command(label='Borrar todas las canciones', command=borrar_todas_canciones)
 
+#- Barra de estado
+barra_estado = Label(root, text='nada', bd=1, relief=GROOVE, anchor=E)
+barra_estado.pack(fill=X, side=BOTTOM, ipady=2)
+
 
 #- Label temporal
-mi_label = Label(root, text='')
-mi_label.pack(pady=20)
-
+etiqueta = Label(root, text='')
+etiqueta.pack(pady=20)
 
 
 
