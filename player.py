@@ -60,6 +60,45 @@ def stop():
     playlist_box.selection_clear(ACTIVE)
 
 
+def siguiente_cancion():
+    #- numero (indice) de la cancion
+    siguiente = playlist_box.curselection()
+    siguiente = siguiente[0] + 1
+
+    #- titulo de la cancion
+    cancion = playlist_box.get(siguiente)
+    cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
+    #- cargar la cancion con pygame mixer
+    pygame.mixer.music.load(cancion)
+    #- tocar la cancion con pygame mixer
+    pygame.mixer.music.play(loops=0)
+
+    #- barra de seleccion
+    playlist_box.selection_clear(0, END)
+    playlist_box.activate(siguiente)
+    playlist_box.selection_set(siguiente, last=None)
+
+
+def anterior_cancion():
+    #- numero (indice) de la cancion
+    anterior = playlist_box.curselection()
+    anterior = anterior[0] - 1
+
+    #- titulo de la cancion
+    cancion = playlist_box.get(anterior)
+    cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
+    #- cargar la cancion con pygame mixer
+    pygame.mixer.music.load(cancion)
+    #- tocar la cancion con pygame mixer
+    pygame.mixer.music.play(loops=0)
+
+    #- barra de seleccion
+    playlist_box.selection_clear(0, END)
+    playlist_box.activate(anterior)
+    playlist_box.selection_set(anterior, last=None)
+
+
+
 global pausado
 pausado = False
 
@@ -92,8 +131,8 @@ control_frame = Frame(root)
 control_frame.pack(pady=20)
 
 #- Crear botones play/stop y demas
-boton_atras = Button(control_frame, image=atras_btn_img, borderwidth=0)
-boton_adelante = Button(control_frame, image=adelante_btn_img, borderwidth=0)
+boton_atras = Button(control_frame, image=atras_btn_img, borderwidth=0, command=anterior_cancion)
+boton_adelante = Button(control_frame, image=adelante_btn_img, borderwidth=0, command=siguiente_cancion)
 boton_play = Button(control_frame, image=play_btn_img, borderwidth=0, command=play)
 boton_pause = Button(control_frame, image=pause_btn_img, borderwidth=0, command=lambda: pause(pausado))
 boton_stop = Button(control_frame, image=stop_btn_img, borderwidth=0, command=stop)
