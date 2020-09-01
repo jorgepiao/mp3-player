@@ -51,8 +51,28 @@ def play():
 
     #- cargar la cancion con pygame mixer
     pygame.mixer.music.load(cancion)
-    #- cargar la cancion con pygame mixer
+    #- tocar la cancion con pygame mixer
     pygame.mixer.music.play(loops=0)
+
+
+def stop():
+    pygame.mixer.music.stop()
+    playlist_box.selection_clear(ACTIVE)
+
+
+global pausado
+pausado = False
+
+def pause(esta_pausado):
+    global pausado
+    pausado = esta_pausado
+
+    if pausado:
+        pygame.mixer.music.unpause()
+        pausado = False
+    else:
+        pygame.mixer.music.pause()
+        pausado = True
 
 
 
@@ -75,8 +95,8 @@ control_frame.pack(pady=20)
 boton_atras = Button(control_frame, image=atras_btn_img, borderwidth=0)
 boton_adelante = Button(control_frame, image=adelante_btn_img, borderwidth=0)
 boton_play = Button(control_frame, image=play_btn_img, borderwidth=0, command=play)
-boton_pause = Button(control_frame, image=pause_btn_img, borderwidth=0)
-boton_stop = Button(control_frame, image=stop_btn_img, borderwidth=0)
+boton_pause = Button(control_frame, image=pause_btn_img, borderwidth=0, command=lambda: pause(pausado))
+boton_stop = Button(control_frame, image=stop_btn_img, borderwidth=0, command=stop)
 
 boton_atras.grid(row=0, column=0, padx=10)
 boton_adelante.grid(row=0, column=1, padx=10)
