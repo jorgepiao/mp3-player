@@ -1,12 +1,15 @@
 
 from tkinter import *
 from tkinter import filedialog
+import pygame
 
 root = Tk()
 
 root.title('MP3 Player')
 root.geometry('500x400')
 
+#- inicializar Pygame
+pygame.mixer.init()
 
 def agregar_cancion():
     cancion = filedialog.askopenfilename(initialdir='audio/', title='Elige una cancion', filetypes=(('Archivos mp3', '*.mp3'), ))
@@ -40,6 +43,18 @@ def borrar_todas_canciones():
     playlist_box.delete(0, END)
 
 
+def play():
+    #- obtener la ruta de la cancion
+    cancion = playlist_box.get(ACTIVE)
+    cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
+    # mi_label.config(text=cancion)
+
+    #- cargar la cancion con pygame mixer
+    pygame.mixer.music.load(cancion)
+    #- cargar la cancion con pygame mixer
+    pygame.mixer.music.play(loops=0)
+
+
 
 #- Crear playlist box
 playlist_box = Listbox(root, bg='black', fg='green', width=60, selectbackground='green', selectforeground='black')
@@ -59,7 +74,7 @@ control_frame.pack(pady=20)
 #- Crear botones play/stop y demas
 boton_atras = Button(control_frame, image=atras_btn_img, borderwidth=0)
 boton_adelante = Button(control_frame, image=adelante_btn_img, borderwidth=0)
-boton_play = Button(control_frame, image=play_btn_img, borderwidth=0)
+boton_play = Button(control_frame, image=play_btn_img, borderwidth=0, command=play)
 boton_pause = Button(control_frame, image=pause_btn_img, borderwidth=0)
 boton_stop = Button(control_frame, image=stop_btn_img, borderwidth=0)
 
