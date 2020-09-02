@@ -9,7 +9,7 @@ import tkinter.ttk as ttk
 root = Tk()
 
 root.title('MP3 Player')
-root.geometry('500x400')
+root.geometry('500x380')
 
 #- inicializar Pygame
 pygame.mixer.init()
@@ -17,6 +17,10 @@ pygame.mixer.init()
 
 #- Funcion para el tiempo de reproduccion
 def tiempo_reproduccion():
+    #- Checar si la cancion de detuvo (stop)
+    if detenido:
+        return
+    
     #- obtener el tiempo actual de la cancion
     tiempo_actual = pygame.mixer.music.get_pos() / 1000
     #- formato de tiempo (minutos y segundos)
@@ -33,9 +37,27 @@ def tiempo_reproduccion():
     #- formato de tiempo
     formato_duracion_cancion = time.strftime('%M:%S', time.gmtime(duracion_cancion))
 
-    #- mostrar el tiempo en la barra de estado
-    if tiempo_actual >= 0:
+    #- Cuando la cancion termina
+    if int(barra_reproduccion.get()) == int(duracion_cancion):
+        stop()
+
+    #- Barra de reproduccion cuando se da al boton de pause
+    elif pausado:
+        # barra_reproduccion.config(value=tiempo_actual)
+        pass
+    else:
+        #- Mover la barra de la reproduccion de la cancion cada segundo
+        tiempo_barra = int(barra_reproduccion.get()) + 1
+        barra_reproduccion.config(to=duracion_cancion, value=tiempo_barra)
+
+        #- Formato para el tiempo de la barra de reproduccion
+        formato_tiempo = time.strftime('%M:%S', time.gmtime(int(barra_reproduccion.get())))
         barra_estado.config(text=f'Tiempo transcurrido: {formato_tiempo} de {formato_duracion_cancion}  ')
+
+    #- mostrar el tiempo en la barra de estado
+    if tiempo_actual > 0:
+        barra_estado.config(text=f'Tiempo transcurrido: {formato_tiempo} de {formato_duracion_cancion}  ')
+
     #- loop para el tiempo por segundo
     barra_estado.after(1000, tiempo_reproduccion)
 
@@ -73,6 +95,10 @@ def borrar_todas_canciones():
 
 
 def play():
+    #- Poner la variable'detenido' en false cuando la cancion este tocando
+    global detenido
+    detenido = False
+
     #- obtener la ruta de la cancion
     cancion = playlist_box.get(ACTIVE)
     cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
@@ -87,14 +113,25 @@ def play():
     tiempo_reproduccion()
 
 
+global detenido
+detenido = False
+
 def stop():
     pygame.mixer.music.stop()
     playlist_box.selection_clear(ACTIVE)
 
     barra_estado.config(text='')
 
+    barra_reproduccion.config(value=0)
+    global detenido
+    detenido = True
+
 
 def siguiente_cancion():
+    #- Resetear la barra de reproduccion y la barra de estado
+    barra_estado.config(text='')
+    barra_reproduccion.config(value=0)
+
     #- numero (indice) de la cancion
     siguiente = playlist_box.curselection()
     siguiente = siguiente[0] + 1
@@ -114,6 +151,10 @@ def siguiente_cancion():
 
 
 def anterior_cancion():
+    #- Resetear la barra de reproduccion y la barra de estado
+    barra_estado.config(text='')
+    barra_reproduccion.config(value=0)
+
     #- numero (indice) de la cancion
     anterior = playlist_box.curselection()
     anterior = anterior[0] - 1
@@ -151,6 +192,19 @@ def volumen(x):
     pygame.mixer.music.set_volume(volumen_barra.get())
 
 
+def barra_reproduccion(x):
+    #- obtener la ruta de la cancion
+    cancion = playlist_box.get(ACTIVE)
+    cancion = f'C:/Users/AMD A6/Desktop/proys/mp3-player_python/audio/{cancion}.mp3'
+    # etiqueta.config(text=cancion)
+
+    #- cargar la cancion con pygame mixer
+    pygame.mixer.music.load(cancion)
+    #- tocar la cancion con pygame mixer
+    pygame.mixer.music.play(loops=0, start=barra_reproduccion.get())
+
+
+
 #- Crear main frame
 main_frame = Frame(root)
 main_frame.pack(pady=20)
@@ -166,6 +220,10 @@ volumen_frame.grid(row=0, column=1, padx=20)
 #- Crear barra de volumen
 volumen_barra = ttk.Scale(volumen_frame, from_=0, to=1, orient=VERTICAL, length=125, value=1, command=volumen)
 volumen_barra.pack(pady=10)
+
+#- Crear barra para reproduccion de la cancion
+barra_reproduccion = ttk.Scale(main_frame, from_=0, to=100, orient=HORIZONTAL, length=360, value=0, command=barra_reproduccion)
+barra_reproduccion.grid(row=2, column=0, pady=20)
 
 #- Imagenes de los botones del control
 atras_btn_img = PhotoImage(file='images/back50.png')
@@ -210,7 +268,7 @@ borrar_cancion_menu.add_command(label='Borrar una cancion', command=borrar_canci
 borrar_cancion_menu.add_command(label='Borrar todas las canciones', command=borrar_todas_canciones)
 
 #- Barra de estado
-barra_estado = Label(root, text='nada', bd=1, relief=GROOVE, anchor=E)
+barra_estado = Label(root, text='', bd=1, relief=GROOVE, anchor=E)
 barra_estado.pack(fill=X, side=BOTTOM, ipady=2)
 
 
