@@ -4,6 +4,7 @@ from tkinter import filedialog
 import pygame
 import time
 from mutagen.mp3 import MP3
+import tkinter.ttk as ttk
 
 root = Tk()
 
@@ -131,7 +132,6 @@ def anterior_cancion():
     playlist_box.selection_set(anterior, last=None)
 
 
-
 global pausado
 pausado = False
 
@@ -147,10 +147,25 @@ def pause(esta_pausado):
         pausado = True
 
 
+def volumen(x):
+    pygame.mixer.music.set_volume(volumen_barra.get())
+
+
+#- Crear main frame
+main_frame = Frame(root)
+main_frame.pack(pady=20)
 
 #- Crear playlist box
-playlist_box = Listbox(root, bg='black', fg='green', width=60, selectbackground='green', selectforeground='black')
-playlist_box.pack(pady=20)
+playlist_box = Listbox(main_frame, bg='black', fg='green', width=60, selectbackground='green', selectforeground='black')
+playlist_box.grid(row=0, column=0)
+
+#- Crear el marco para la barra de volumen
+volumen_frame = LabelFrame(main_frame, text='Volumen')
+volumen_frame.grid(row=0, column=1, padx=20)
+
+#- Crear barra de volumen
+volumen_barra = ttk.Scale(volumen_frame, from_=0, to=1, orient=VERTICAL, length=125, value=1, command=volumen)
+volumen_barra.pack(pady=10)
 
 #- Imagenes de los botones del control
 atras_btn_img = PhotoImage(file='images/back50.png')
@@ -160,8 +175,8 @@ pause_btn_img = PhotoImage(file='images/pause50.png')
 stop_btn_img = PhotoImage(file='images/stop50.png')
 
 #- Crear frame de botones
-control_frame = Frame(root)
-control_frame.pack(pady=20)
+control_frame = Frame(main_frame)
+control_frame.grid(row=1, column=0, pady=20)
 
 #- Crear botones play/stop y demas
 boton_atras = Button(control_frame, image=atras_btn_img, borderwidth=0, command=anterior_cancion)
